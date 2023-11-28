@@ -539,16 +539,54 @@ static int Multrun_Fits_Headers_Set(int exposure_count,int do_standard)
  * @return The routine returns TRUE on sucess and FALSE on failure. On failure, Liric_General_Error_Number and
  *         Liric_General_Error_String should be set.
  * @see liric_fits_header.html#Liric_Fits_Header_Integer_Add
+ * @see liric_fits_header.html#Liric_Fits_Header_String_Add
  * @see liric_general.html#Liric_General_Error_Number
  * @see liric_general.html#Liric_General_Error_String
  * @see liric_general.html#Liric_General_Log
  * @see liric_general.html#Liric_General_Log_Format
  * @see ../detector/cdocs/detector_fits_filename.html#Detector_Fits_Filename_Run_Get
+ * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Position_Get
+ * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Offset_Size_Get
+ * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Offset_Size_To_String
  */
 static int Multrun_Exposure_Fits_Headers_Set(void)
 {
+	NUDGEMATIC_OFFSET_SIZE_T offset_size;
+	int position;
+	
 	/* EXPNUM */
 	if(!Liric_Fits_Header_Integer_Add("EXPNUM",Detector_Fits_Filename_Run_Get(),"Number of exposure within Multrun"))
 		return FALSE;
 	return TRUE;
+	if(Liric_Config_Nudgematic_Is_Enabled())
+	{
+		/* NUDGEPOS */
+		if(!Nudgematic_Command_Position_Get(&position))
+		{
+			Liric_General_Error_Number = 620;
+			sprintf(Liric_General_Error_String,"Multrun_Fits_Headers_Set:Failed to get nudgematic position.");
+			return FALSE;
+		}
+		if(!Liric_Fits_Header_Integer_Add("NUDGEPOS",position,"Nudgematic offset position"))
+			return FALSE;
+		/* NUDGEOFF */
+		if(!Nudgematic_Command_Offset_Size_Get(&offset_size))
+		{
+			Liric_General_Error_Number = 621;
+			sprintf(Liric_General_Error_String,"Multrun_Fits_Headers_Set:Failed to get nudgematic offset size.");
+			return FALSE;
+		}
+		if(!Liric_Fits_Header_String_Add("NUDGEOFF",Nudgematic_Command_Offset_Size_To_String(offset_size),NULL))
+			return FALSE;
+		
+	}
+	else
+	{
+		/* NUDGEPOS */
+		if(!Liric_Fits_Header_Integer_Add("NUDGEPOS",-1,"Nudgematic position unknown"))
+			return FALSE;
+		/* NUDGEOFF */
+		if(!Liric_Fits_Header_String_Add("NUDGEOFF","UNKNOWN",NULL))
+			return FALSE;
+	}
 }
