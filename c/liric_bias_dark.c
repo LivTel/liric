@@ -744,6 +744,7 @@ static int Bias_Dark_Fits_Headers_Set(int is_bias,int exposure_count)
  * @return The routine returns TRUE on sucess and FALSE on failure. On failure, Liric_General_Error_Number and
  *         Liric_General_Error_String should be set.
  * @see liric_fits_header.html#Liric_Fits_Header_Integer_Add
+ * @see liric_fits_header.html#Liric_Fits_Header_String_Add
  * @see liric_general.html#Liric_General_Error_Number
  * @see liric_general.html#Liric_General_Error_String
  * @see liric_general.html#Liric_General_Log
@@ -759,6 +760,12 @@ static int Bias_Dark_Exposure_Fits_Headers_Set(void)
 	/* EXPNUM */
 	if(!Liric_Fits_Header_Integer_Add("EXPNUM",Detector_Fits_Filename_Run_Get(),
 					   "Number of exposure within MultBias/MultDark"))
+		return FALSE;
+	/* NUDGEPOS */
+	if(!Liric_Fits_Header_Integer_Add("NUDGEPOS",-1,"Nudgematic position unknown"))
+		return FALSE;
+	/* NUDGEOFF */
+	if(!Liric_Fits_Header_String_Add("NUDGEOFF","UNKNOWN",NULL))
 		return FALSE;
 #if LIRIC_DEBUG > 1
 	Liric_General_Log("biasdark","liric_bias_dark.c","Bias_Dark_Exposure_Fits_Headers_Set",LOG_VERBOSITY_TERSE,"BIASDARK",

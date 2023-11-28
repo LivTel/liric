@@ -427,6 +427,9 @@ static int Multrun_Fits_Headers_Set(int exposure_count,int do_standard)
 			"Multrun_Fits_Headers_Set:do_standard was not a valid boolean (%d).",do_standard);
 		return FALSE;
 	}
+#if LIRIC_DEBUG > 5
+	Liric_General_Log("multrun","liric_multrun.c","Multrun_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,"MULTRUN","Started.");
+#endif		
 	/* OBSTYPE */
 	if(do_standard)
 		retval = Liric_Fits_Header_String_Add("OBSTYPE","STANDARD",NULL);
@@ -531,6 +534,9 @@ static int Multrun_Fits_Headers_Set(int exposure_count,int do_standard)
 	/* CCDWYSIZ */
 	if(!Liric_Fits_Header_Integer_Add("CCDWYSIZ",Detector_Setup_Get_Sensor_Size_Y(),"[pixels] Y window size"))
 		return FALSE;
+#if LIRIC_DEBUG > 5
+	Liric_General_Log("multrun","liric_multrun.c","Multrun_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,"MULTRUN","Finished.");
+#endif		
 	return TRUE;
 }
 
@@ -554,12 +560,19 @@ static int Multrun_Exposure_Fits_Headers_Set(void)
 	NUDGEMATIC_OFFSET_SIZE_T offset_size;
 	int position;
 	
+#if LIRIC_DEBUG > 5
+	Liric_General_Log("multrun","liric_multrun.c","Multrun_Exposure_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,"MULTRUN",
+			  "Started.");
+#endif		
 	/* EXPNUM */
 	if(!Liric_Fits_Header_Integer_Add("EXPNUM",Detector_Fits_Filename_Run_Get(),"Number of exposure within Multrun"))
 		return FALSE;
-	return TRUE;
 	if(Liric_Config_Nudgematic_Is_Enabled())
 	{
+#if LIRIC_DEBUG > 5
+		Liric_General_Log_Format("multrun","liric_multrun.c","Multrun_Exposure_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,
+					 "MULTRUN","Setting Nudgematic FITS headers.");
+#endif		
 		/* NUDGEPOS */
 		if(!Nudgematic_Command_Position_Get(&position))
 		{
@@ -567,6 +580,10 @@ static int Multrun_Exposure_Fits_Headers_Set(void)
 			sprintf(Liric_General_Error_String,"Multrun_Fits_Headers_Set:Failed to get nudgematic position.");
 			return FALSE;
 		}
+#if LIRIC_DEBUG > 5
+		Liric_General_Log_Format("multrun","liric_multrun.c","Multrun_Exposure_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,
+					 "MULTRUN","Nudgematic Position is %d.",position);
+#endif		
 		if(!Liric_Fits_Header_Integer_Add("NUDGEPOS",position,"Nudgematic offset position"))
 			return FALSE;
 		/* NUDGEOFF */
@@ -576,12 +593,20 @@ static int Multrun_Exposure_Fits_Headers_Set(void)
 			sprintf(Liric_General_Error_String,"Multrun_Fits_Headers_Set:Failed to get nudgematic offset size.");
 			return FALSE;
 		}
+#if LIRIC_DEBUG > 5
+		Liric_General_Log_Format("multrun","liric_multrun.c","Multrun_Exposure_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,
+					 "MULTRUN","Nudgematic offset size is %s.",
+					 Nudgematic_Command_Offset_Size_To_String(offset_size));
+#endif		
 		if(!Liric_Fits_Header_String_Add("NUDGEOFF",Nudgematic_Command_Offset_Size_To_String(offset_size),NULL))
-			return FALSE;
-		
+			return FALSE;	
 	}
 	else
 	{
+#if LIRIC_DEBUG > 5
+		Liric_General_Log_Format("multrun","liric_multrun.c","Multrun_Exposure_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,
+					 "MULTRUN","Nudgematic disabled: Setting FITS headers to unknown.");
+#endif		
 		/* NUDGEPOS */
 		if(!Liric_Fits_Header_Integer_Add("NUDGEPOS",-1,"Nudgematic position unknown"))
 			return FALSE;
@@ -589,4 +614,9 @@ static int Multrun_Exposure_Fits_Headers_Set(void)
 		if(!Liric_Fits_Header_String_Add("NUDGEOFF","UNKNOWN",NULL))
 			return FALSE;
 	}
+#if LIRIC_DEBUG > 5
+	Liric_General_Log("multrun","liric_multrun.c","Multrun_Exposure_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,"MULTRUN",
+			  "Finished.");
+#endif		
+	return TRUE;
 }
