@@ -832,11 +832,11 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 			returnCode = statusCommand.getReturnCode();
 			errorString = statusCommand.getParsedReply();
 			liric.log(Logging.VERBOSITY_TERSE,
-				   "getTemperature:exposure run command failed for C layer ("+
+				   "getTemperature:status temperature get command failed for C layer ("+
 				   cLayerHostname+":"+cLayerPortNumber+
 				   ") with return code "+returnCode+" and error string:"+errorString);
 			throw new Exception(this.getClass().getName()+":getTemperature:"+
-					    "exposure run command failed C layer ("+
+					    "status temperature get command failed C layer ("+
 					    cLayerHostname+":"+cLayerPortNumber+
 					    ") with return code "+returnCode+" and error string:"+errorString);
 		}
