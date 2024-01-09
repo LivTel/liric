@@ -31,3 +31,7 @@ foreach fmtfile ( rap_1000ms.fmt rap_100ms.fmt rap_bias.fmt )
 	ln -s ${file}
     endif
 end
+# special case for 0ms which is a bias
+if ( ! -e rap_0ms.fmt  ) then
+  ln -s ${LIRIC_NOGIT_SRC_HOME}/fmt/rap_bias.fmt rap_0ms.fmt 
+endif
