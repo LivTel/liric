@@ -210,12 +210,12 @@ int Liric_Bias_Dark_MultBias(int exposure_count,char ***filename_list,int *filen
 	/* move filter wheel to mirror position */
 	if(Liric_Config_Filter_Wheel_Is_Enabled())
 	{
-		/* which filter position contains the Mirror filter */
-		if(!Filter_Wheel_Config_Name_To_Position("Mirror",&mirror_filter_wheel_position))
+		/* which filter position contains the AuMirror filter */
+		if(!Filter_Wheel_Config_Name_To_Position("AuMirror",&mirror_filter_wheel_position))
 		{
 			Liric_General_Error_Number = 714;
 			sprintf(Liric_General_Error_String,
-				"Liric_Bias_Dark_MultBias:Failed to find Mirror filter wheel position.");
+				"Liric_Bias_Dark_MultBias:Failed to find AuMirror filter wheel position.");
 			return FALSE;
 		}
 		/* move filter wheel */
@@ -223,7 +223,7 @@ int Liric_Bias_Dark_MultBias(int exposure_count,char ***filename_list,int *filen
 		{
 			Liric_General_Error_Number = 715;
 			sprintf(Liric_General_Error_String,
-				"Liric_Bias_Dark_MultBias:Failed to move filter wheel to  Mirror position %d.",
+				"Liric_Bias_Dark_MultBias:Failed to move filter wheel to AuMirror position %d.",
 				mirror_filter_wheel_position);
 			return FALSE;
 		}
@@ -432,12 +432,12 @@ int Liric_Bias_Dark_MultDark(int exposure_length_ms,int exposure_count,char ***f
 	/* move filter wheel to mirror position */
 	if(Liric_Config_Filter_Wheel_Is_Enabled())
 	{
-		/* which filter position contains the Mirror filter */
-		if(!Filter_Wheel_Config_Name_To_Position("Mirror",&mirror_filter_wheel_position))
+		/* which filter position contains the AuMirror filter */
+		if(!Filter_Wheel_Config_Name_To_Position("AuMirror",&mirror_filter_wheel_position))
 		{
 			Liric_General_Error_Number = 722;
 			sprintf(Liric_General_Error_String,
-				"Liric_Bias_Dark_MultDark:Failed to find Mirror filter wheel position.");
+				"Liric_Bias_Dark_MultDark:Failed to find AuMirror filter wheel position.");
 			return FALSE;
 		}
 		/* move filter wheel */
@@ -445,7 +445,7 @@ int Liric_Bias_Dark_MultDark(int exposure_length_ms,int exposure_count,char ***f
 		{
 			Liric_General_Error_Number = 723;
 			sprintf(Liric_General_Error_String,
-				"Liric_Bias_Dark_MultDark:Failed to move filter wheel to  Mirror position %d.",
+				"Liric_Bias_Dark_MultDark:Failed to move filter wheel to AuMirror position %d.",
 				mirror_filter_wheel_position);
 			return FALSE;
 		}
