@@ -26,6 +26,28 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 	 */
 	public final static String RCSID = new String("$Id$");
 	/**
+	 * The index in the commsInstrumentStatus array of the detector comms instrument status.
+	 * @see #commsInstrumentStatus
+	 */
+	public final static int COMMS_INSTRUMENT_STATUS_DETECTOR = 0;
+	/**
+	 * The index in the commsInstrumentStatus array of the nudgematic control (arduino) 
+	 * comms instrument status.
+	 * @see #commsInstrumentStatus
+	 */
+	public final static int COMMS_INSTRUMENT_STATUS_NUDGEMATIC = 1;
+	/**
+	 * The index in the commsInstrumentStatus array of the filter wheel
+	 * comms instrument status.
+	 * @see #commsInstrumentStatus
+	 */
+	public final static int COMMS_INSTRUMENT_STATUS_FILTER_WHEEL = 2;
+	/**
+	 * The number of elements in the commsInstrumentStatus array.
+	 * @see #commsInstrumentStatus
+	 */
+	public final static int COMMS_INSTRUMENT_STATUS_COUNT = 3;
+	/**
 	 * This hashtable is created in processCommand, and filled with status data,
 	 * and is returned in the GET_STATUS_DONE object.
 	 * Could be declared:  Generic:&lt;String, Object&gt; but this is not supported by Java 1.4.
@@ -39,6 +61,13 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#VALUE_STATUS_UNKNOWN
 	 */
 	private String detectorTemperatureInstrumentStatus = GET_STATUS_DONE.VALUE_STATUS_UNKNOWN;
+	/**
+	 * An array of standard status strings passed back in the hashTable, 
+	 * describing the communication status of various bits of software/hardware the 
+	 * Liric robotic control system talks to.
+	 * @see #COMMS_INSTRUMENT_STATUS_COUNT
+	 */
+	private String commsInstrumentStatus[] = new String[COMMS_INSTRUMENT_STATUS_COUNT];
 	/**
 	 * The current overall mode (status) of the RingoIII control system.
 	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#MODE_IDLE
@@ -116,6 +145,7 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 	 * @see #status
 	 * @see #hashTable
 	 * @see #detectorTemperatureInstrumentStatus
+	 * @see #commsInstrumentStatus
 	 * @see #getCLayerConfig
 	 * @see #getExposureStatus
 	 * @see #getStatusExposureIndex
@@ -159,6 +189,11 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 			hashTable.put(GET_STATUS_DONE.KEYWORD_DETECTOR_TEMPERATURE_INSTRUMENT_STATUS,
 				      detectorTemperatureInstrumentStatus);
 			hashTable.put(GET_STATUS_DONE.KEYWORD_INSTRUMENT_STATUS,GET_STATUS_DONE.VALUE_STATUS_UNKNOWN);
+			// initialise comms status to unknown
+			for(int i = 0; i < COMMS_INSTRUMENT_STATUS_COUNT; i++)
+			{
+				commsInstrumentStatus[i] = GET_STATUS_DONE.VALUE_STATUS_UNKNOWN;
+			}
 			// current command
 			currentCommand = status.getCurrentCommand();
 			if(currentCommand == null)
@@ -231,12 +266,18 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 	
 	/**
 	 * Get the status/position of the filter wheel.
+	 * The commsInstrumentStatus for the filter wheel is also updated by this method.
 	 * @exception Exception Thrown if an error occurs.
 	 * @see #cLayerHostname
 	 * @see #cLayerPortNumber
+	 * @see #hashTable
+	 * @see #COMMS_INSTRUMENT_STATUS_FILTER_WHEEL
+	 * @see #commsInstrumentStatus
 	 * @see ngat.liric.command.StatusFilterWheelFilterCommand
 	 * @see ngat.liric.command.StatusFilterWheelPositionCommand
 	 * @see ngat.liric.command.StatusFilterWheelStatusCommand
+	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#VALUE_STATUS_OK
+	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#VALUE_STATUS_FAIL
 	 */
 	protected void getFilterWheelStatus() throws Exception
 	{
@@ -259,6 +300,10 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 		// check the parsed reply
 		if(statusFilterWheelFilterCommand.getParsedReplyOK() == false)
 		{
+			commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_FILTER_WHEEL] = GET_STATUS_DONE.
+				VALUE_STATUS_FAIL;
+			hashTable.put("Filter Wheel.Comms.Status",
+				      commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_FILTER_WHEEL]);
 			returnCode = statusFilterWheelFilterCommand.getReturnCode();
 			errorString = statusFilterWheelFilterCommand.getParsedReply();
 			liric.log(Logging.VERBOSITY_TERSE,
@@ -279,6 +324,10 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 		// check the parsed reply
 		if(statusFilterWheelPositionCommand.getParsedReplyOK() == false)
 		{
+			commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_FILTER_WHEEL] = GET_STATUS_DONE.
+				VALUE_STATUS_FAIL;
+			hashTable.put("Filter Wheel.Comms.Status",
+				      commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_FILTER_WHEEL]);
 			returnCode = statusFilterWheelPositionCommand.getReturnCode();
 			errorString = statusFilterWheelPositionCommand.getParsedReply();
 			liric.log(Logging.VERBOSITY_TERSE,
@@ -299,6 +348,10 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 		// check the parsed reply
 		if(statusFilterWheelStatusCommand.getParsedReplyOK() == false)
 		{
+			commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_FILTER_WHEEL] = GET_STATUS_DONE.
+				VALUE_STATUS_FAIL;
+			hashTable.put("Filter Wheel.Comms.Status",
+				      commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_FILTER_WHEEL]);
 			returnCode = statusFilterWheelStatusCommand.getReturnCode();
 			errorString = statusFilterWheelStatusCommand.getParsedReply();
 			liric.log(Logging.VERBOSITY_TERSE,
@@ -310,6 +363,10 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 		}
 		filterWheelStatus = statusFilterWheelStatusCommand.getFilterWheelStatus();
 		hashTable.put("Filter Wheel Status:1",new String(filterWheelStatus));
+		commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_FILTER_WHEEL] = GET_STATUS_DONE.
+			VALUE_STATUS_OK;
+		hashTable.put("Filter Wheel.Comms.Status",
+			      commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_FILTER_WHEEL]);
 	}
 	
 	/**
@@ -755,34 +812,49 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 	/**
 	 * Get intermediate level status. This is:
 	 * <ul>
-	 * <li>detctor temperature information from the camera.
+	 * <li>detector temperature information from the camera.
 	 * <li>Nudgematic status.
 	 * </ul>
 	 * The overall health and well-being statii are then computed using setInstrumentStatus.
+	 * @see #hashTable
+	 * @see #commsInstrumentStatus
 	 * @see #getTemperature
 	 * @see #getNudgematicStatus
 	 * @see #setInstrumentStatus
+	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#VALUE_STATUS_OK
+	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#VALUE_STATUS_FAIL
 	 */
 	private void getIntermediateStatus()
 	{
 		try
 		{
 			getTemperature();
+			commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_DETECTOR] = GET_STATUS_DONE.
+				VALUE_STATUS_OK;
 		}
 		catch(Exception e)
 		{
 			liric.error(this.getClass().getName()+
 				     ":getIntermediateStatus:Retrieving temperature status failed.",e);
+			commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_DETECTOR] = GET_STATUS_DONE.
+				VALUE_STATUS_FAIL;
 		}
 		try
 		{
 			getNudgematicStatus();
+			commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_NUDGEMATIC] = GET_STATUS_DONE.
+				VALUE_STATUS_OK;
 		}
 		catch(Exception e)
 		{
 			liric.error(this.getClass().getName()+
 				     ":getIntermediateStatus:Retrieving nudgematic status failed.",e);
+			commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_NUDGEMATIC] = GET_STATUS_DONE.
+				VALUE_STATUS_FAIL;
 		}
+		hashTable.put("Detector.Comms.Status",commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_DETECTOR]);
+		hashTable.put("Nudgematic.Comms.Status",
+			      commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_NUDGEMATIC]);
 	// Standard status
 		setInstrumentStatus();
 	}
@@ -917,6 +989,8 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 	 * @see #hashTable
 	 * @see #status
 	 * @see #detectorTemperatureInstrumentStatus
+	 * @see #COMMS_INSTRUMENT_STATUS_COUNT
+	 * @see #commsInstrumentStatus
 	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#KEYWORD_INSTRUMENT_STATUS
 	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#VALUE_STATUS_OK
 	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#VALUE_STATUS_WARN
@@ -931,9 +1005,19 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 		// if a sub-status is in warning, overall status is in warning
 		if(detectorTemperatureInstrumentStatus.equals(GET_STATUS_DONE.VALUE_STATUS_WARN))
 			instrumentStatus = GET_STATUS_DONE.VALUE_STATUS_WARN;
+		for(int i = 0; i < COMMS_INSTRUMENT_STATUS_COUNT; i++)
+		{
+			if(commsInstrumentStatus[i].equals(GET_STATUS_DONE.VALUE_STATUS_WARN))
+				instrumentStatus = GET_STATUS_DONE.VALUE_STATUS_WARN;
+		}
 		// if a sub-status is in fail, overall status is in fail. This overrides a previous warn
 	        if(detectorTemperatureInstrumentStatus.equals(GET_STATUS_DONE.VALUE_STATUS_FAIL))
 			instrumentStatus = GET_STATUS_DONE.VALUE_STATUS_FAIL;
+		for(int i = 0; i < COMMS_INSTRUMENT_STATUS_COUNT; i++)
+		{
+			if(commsInstrumentStatus[i].equals(GET_STATUS_DONE.VALUE_STATUS_FAIL))
+				instrumentStatus = GET_STATUS_DONE.VALUE_STATUS_FAIL;
+		}
 		// set standard status in hashtable
 		hashTable.put(GET_STATUS_DONE.KEYWORD_INSTRUMENT_STATUS,instrumentStatus);
 	}
