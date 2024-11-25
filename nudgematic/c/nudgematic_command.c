@@ -396,6 +396,73 @@ int Nudgematic_Command_Position_Get(int *position)
 }
 
 /**
+ * Routine to get the current temperature from 3 Dallas 18B60 1-wire temperature sensors connected to the nudgematic.
+ * @param temp1 The address of an double, on return containing one of the temperature sensor's temperature (nominally 'Internal'
+ *        but this may change).
+ * @param temp2 The address of an double, on return containing one of the temperature sensor's temperature (nominally 'External'
+ *        but this may change).
+ * @param temp3 The address of an double, on return containing one of the temperature sensor's temperature (nominally 'Radiator'
+ *        but this may change).
+ * @return The routine returns TRUE on success and FALSE on failure.
+ * @see #Command_Error_Number
+ * @see #Command_Error_String
+ * @see #Command_Parse_Reply_String
+ * @see #Nudgematic_Command_Offset_Size_To_String
+ * @see nudgematic_connection.html#Nudgematic_Connection_Send_Command
+ */
+int Nudgematic_Command_Temperature_Get(double *temp1,double *temp2,double *temp3)
+{
+	char command_string[STRING_LENGTH];
+	char reply_string[STRING_LENGTH];
+	int retval;
+
+	if(temp1 == NULL)
+	{
+		Command_Error_Number = 23;
+		sprintf(Command_Error_String,"Nudgematic_Command_Temperature_Get:temp1 was NULL.");
+		return FALSE;		
+	}
+	if(temp2 == NULL)
+	{
+		Command_Error_Number = 24;
+		sprintf(Command_Error_String,"Nudgematic_Command_Temperature_Get:temp2 was NULL.");
+		return FALSE;		
+	}
+	if(temp3 == NULL)
+	{
+		Command_Error_Number = 25;
+		sprintf(Command_Error_String,"Nudgematic_Command_Temperature_Get:temp3 was NULL.");
+		return FALSE;		
+	}
+	/* query temperatures */
+	command_string[0] = 't';
+	command_string[1] = '\n';
+	command_string[2] = '\0';
+	if(!Nudgematic_Connection_Send_Command(command_string,reply_string,STRING_LENGTH))
+	{
+		Command_Error_Number = 26;
+		sprintf(Command_Error_String,"Nudgematic_Command_Temperature_Get:Failed to send command string '%s'.",
+			command_string);
+		return FALSE;		
+	}
+	/* parse reply string */
+	retval = sscanf(reply_string,"%lf %lf %lf",temp1,temp2,temp3);
+	if(retval != 3)
+	{
+		Command_Error_Number = 27;
+		sprintf(Command_Error_String,"Nudgematic_Command_Temperature_Get:Failed to parse reply_string '%s' (%d).",
+			reply_string,retval);
+		return FALSE;		
+	}
+#if LOGGING > 0
+	Nudgematic_General_Log_Format(LOG_VERBOSITY_INTERMEDIATE,
+				      "Nudgematic_Command_Temperature_Get: Returned temperatures %.2f, %.2f, %.2f.",
+				      (*temp1),(*temp2),(*temp3));
+#endif /* LOGGING */
+	return TRUE;
+}
+
+/**
  * Routine to set the offset size of the positions of the Nudgematic.
  * @param size The size of the offset to use, either OFFSET_SIZE_NONE, OFFSET_SIZE_SMALL or OFFSET_SIZE_LARGE.
  * @return The routine returns TRUE on success and FALSE on failure.
