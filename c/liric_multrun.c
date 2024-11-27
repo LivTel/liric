@@ -544,14 +544,18 @@ static int Multrun_Fits_Headers_Set(int exposure_count,int do_standard)
  * Routine to collect and insert FITS headers pertaining to the current exposure in the multrun.
  * @return The routine returns TRUE on sucess and FALSE on failure. On failure, Liric_General_Error_Number and
  *         Liric_General_Error_String should be set.
+ * @see #CENTIGRADE_TO_KELVIN
+ * @see liric_config.html#Liric_Config_Nudgematic_Is_Enabled
  * @see liric_fits_header.html#Liric_Fits_Header_Integer_Add
  * @see liric_fits_header.html#Liric_Fits_Header_String_Add
+ * @see liric_fits_header.html#Liric_Fits_Header_Float_Add
  * @see liric_general.html#Liric_General_Error_Number
  * @see liric_general.html#Liric_General_Error_String
  * @see liric_general.html#Liric_General_Log
  * @see liric_general.html#Liric_General_Log_Format
  * @see ../detector/cdocs/detector_fits_filename.html#Detector_Fits_Filename_Run_Get
  * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Position_Get
+ * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Temperature_Get
  * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Offset_Size_Get
  * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Offset_Size_To_String
  */
@@ -559,6 +563,7 @@ static int Multrun_Exposure_Fits_Headers_Set(void)
 {
 	NUDGEMATIC_OFFSET_SIZE_T offset_size;
 	int position;
+	double temp1,temp2,temp3;
 	
 #if LIRIC_DEBUG > 5
 	Liric_General_Log("multrun","liric_multrun.c","Multrun_Exposure_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,"MULTRUN",
@@ -600,6 +605,26 @@ static int Multrun_Exposure_Fits_Headers_Set(void)
 #endif		
 		if(!Liric_Fits_Header_String_Add("NUDGEOFF",Nudgematic_Command_Offset_Size_To_String(offset_size),NULL))
 			return FALSE;	
+		/* ENVTEMP<N> */
+		if(!Nudgematic_Command_Temperature_Get(&temp1,&temp2,&temp3))
+		{
+			Liric_General_Error_Number = 622;
+			sprintf(Liric_General_Error_String,"Multrun_Fits_Headers_Set:Failed to get nudgematic temperatures.");
+			return FALSE;
+		}
+#if LIRIC_DEBUG > 5
+		Liric_General_Log_Format("multrun","liric_multrun.c","Multrun_Exposure_Fits_Headers_Set",LOG_VERBOSITY_VERBOSE,
+					 "MULTRUN","Nudgematic Temperatures are %.2f, %.2f, %.2f.",temp1,temp2,temp3);
+#endif
+		/* ENVTEMP0  (enviromental temperatures headers are 0-based like Sprat, but the Nudgematic Arduino nominally has them 1-based) */
+		if(!Liric_Fits_Header_Float_Add("ENVTEMP0",temp1+CENTIGRADE_TO_KELVIN,"[Kelvin] Nominally External case temperature"))
+			return FALSE;
+		/* ENVTEMP1 */
+		if(!Liric_Fits_Header_Float_Add("ENVTEMP1",temp2+CENTIGRADE_TO_KELVIN,"[Kelvin] Nominally Radiator block temperature"))
+			return FALSE;
+		/* ENVTEMP2 */
+		if(!Liric_Fits_Header_Float_Add("ENVTEMP2",temp3+CENTIGRADE_TO_KELVIN,"[Kelvin] Nominally Internal case temperature"))
+			return FALSE;
 	}
 	else
 	{
@@ -612,6 +637,15 @@ static int Multrun_Exposure_Fits_Headers_Set(void)
 			return FALSE;
 		/* NUDGEOFF */
 		if(!Liric_Fits_Header_String_Add("NUDGEOFF","UNKNOWN",NULL))
+			return FALSE;
+		/* ENVTEMP0 */
+		if(!Liric_Fits_Header_Float_Add("ENVTEMP0",0.0+CENTIGRADE_TO_KELVIN,"[Kelvin] Nominally External case temperature"))
+			return FALSE;
+		/* ENVTEMP1 */
+		if(!Liric_Fits_Header_Float_Add("ENVTEMP1",0.0+CENTIGRADE_TO_KELVIN,"[Kelvin] Nominally External case temperature"))
+			return FALSE;
+		/* ENVTEMP2 */
+		if(!Liric_Fits_Header_Float_Add("ENVTEMP2",0.0+CENTIGRADE_TO_KELVIN,"[Kelvin] Nominally External case temperature"))
 			return FALSE;
 	}
 #if LIRIC_DEBUG > 5

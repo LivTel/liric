@@ -36,6 +36,8 @@ typedef enum NUDGEMATIC_OFFSET_SIZE_ENUM NUDGEMATIC_OFFSET_SIZE_T;
 extern int Nudgematic_Command_Position_Set(int position);
 extern int Nudgematic_Command_Position_Get(int *position);
 
+extern int Nudgematic_Command_Temperature_Get(double *temp1,double *temp2,double *temp3);
+
 extern int Nudgematic_Command_Offset_Size_Set(NUDGEMATIC_OFFSET_SIZE_T size);
 extern int Nudgematic_Command_Offset_Size_Get(NUDGEMATIC_OFFSET_SIZE_T *size);
 extern int Nudgematic_Command_Offset_Size_Parse(char *offset_size_string, NUDGEMATIC_OFFSET_SIZE_T *size);

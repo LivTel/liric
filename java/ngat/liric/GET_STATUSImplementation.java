@@ -1023,26 +1023,30 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 	}
 
 	/**
-	 * Get the status/position/offsetsize of the nudgematic mechanism.
+	 * Get the status/position/offsetsize of the nudgematic mechanism. Also get environmental temeprature status
+	 * from the Nudgematic Arduino (which is what the temperature sensors are attached to).
 	 * @exception Exception Thrown if an error occurs.
 	 * @see #cLayerHostname
 	 * @see #cLayerPortNumber
 	 * @see ngat.liric.command.StatusNudgematicPositionCommand
 	 * @see ngat.liric.command.StatusNudgematicStatusCommand
 	 * @see ngat.liric.command.StatusNudgematicOffsetSizeCommand
+	 * @see ngat.liric.command.StatusNudgematicTemperatureCommand
 	 */
 	protected void getNudgematicStatus() throws Exception
 	{
 		StatusNudgematicPositionCommand statusNudgematicPositionCommand = null;
 		StatusNudgematicStatusCommand statusNudgematicStatusCommand = null;
 		StatusNudgematicOffsetSizeCommand statusNudgematicOffsetSizeCommand = null;
+		StatusNudgematicTemperatureCommand statusNudgematicTemperatureCommand = null;
 		
 		String errorString = null;
 		String nudgematicStatus = null;
 		String nudgematicOffsetSize = null;
 		int returnCode;
 		int nudgematicPosition;
-
+		double temp1,temp2,temp3;
+		
 		// "status nudgematic position" command
 		statusNudgematicPositionCommand = new StatusNudgematicPositionCommand();
 		statusNudgematicPositionCommand.setAddress(cLayerHostname);
@@ -1103,6 +1107,37 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 		}
 		nudgematicOffsetSize = statusNudgematicOffsetSizeCommand.getNudgematicOffsetSize();
 		hashTable.put("Nudgematic Offset Size",new String(nudgematicOffsetSize));
+		// "status nudgematic temperature" command
+		statusNudgematicTemperatureCommand = new StatusNudgematicTemperatureCommand();
+		statusNudgematicTemperatureCommand.setAddress(cLayerHostname);
+		statusNudgematicTemperatureCommand.setPortNumber(cLayerPortNumber);
+		// actually send the command to the C layer
+		statusNudgematicTemperatureCommand.sendCommand();
+		// check the parsed reply
+		// These are non-critical, so don't fail the instrument if the sensor is broken
+		if(statusNudgematicTemperatureCommand.getParsedReplyOK())
+		{
+			temp1 = statusNudgematicTemperatureCommand.getNudgematicTemperature(
+				      StatusNudgematicTemperatureCommand.TEMP_EXTERNAL_CASE);
+			temp2 = statusNudgematicTemperatureCommand.getNudgematicTemperature(
+				      StatusNudgematicTemperatureCommand.TEMP_RADIATOR_BLOCK);
+			temp3 = statusNudgematicTemperatureCommand.getNudgematicTemperature(
+				      StatusNudgematicTemperatureCommand.TEMP_INTERNAL_CASE);
+			hashTable.put("Environmental.Temperature.1",new Double(temp1));
+			hashTable.put("Environmental.Temperature.2",new Double(temp2));
+			hashTable.put("Environmental.Temperature.3",new Double(temp3));
+		}
+		else
+		{
+			returnCode = statusNudgematicTemperatureCommand.getReturnCode();
+			errorString = statusNudgematicTemperatureCommand.getParsedReply();
+			liric.log(Logging.VERBOSITY_TERSE,
+				   "getNudgematicStatus:nudgematic temperature command failed with return code "+
+				   returnCode+" and error string:"+errorString);
+			//throw new Exception(this.getClass().getName()+
+			//		   ":getNudgematicStatus:nudgematic temperature command failed with return code "+
+			//		    returnCode+" and error string:"+errorString);
+		}
 	}
 
 	/**

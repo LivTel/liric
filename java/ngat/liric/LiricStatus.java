@@ -592,7 +592,7 @@ public class LiricStatus
 	
 	/**
 	 * Method to get a filter's Id name from it's type name. This information is stored in the
-	 * per-semester filter property file, under the 'filterwheel.<filterTypeName>.id' property.
+	 * per-semester filter property file, under the 'filterwheel.&lt;filterTypeName&gt;.id' property.
 	 * @param filterTypeName The filter type name to get the actual filter id from.
 	 * @return A string, which is the unique filter id for this type of filter.
 	 * @exception IllegalArgumentException Thrown if the specified property cannot be found.
@@ -614,7 +614,7 @@ public class LiricStatus
 
 	/**
 	 * Method to get a filter's Id optical thickness from it's name . This information is stored in the
-	 * filter database property file, under the 'filter.<filterIdName>.optical_thickness' property.
+	 * filter database property file, under the 'filter.&lt;filterIdName&gt;.optical_thickness' property.
 	 * The filter's Id string can be retrieved from a filter type string using getFilterIdName.
 	 * @param filterIdName The filter id name to get the optical thickness for.
 	 * @return A double, which is the optical thickness of the given filter.

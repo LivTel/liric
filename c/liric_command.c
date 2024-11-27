@@ -1195,7 +1195,7 @@ int Liric_Command_MultDark(char *command_string,char **reply_string)
  * <ul>
  * <li>status temperature [get|status]
  * <li>status filterwheel [filter|position|status]
- * <li>status nudgematic [position|status|offsetsize]
+ * <li>status nudgematic [position|status|offsetsize|temperature]
  * <li>status exposure [status|count|length|start_time]
  * <li>status exposure [index|multrun|run]
  * </ul>
@@ -1230,6 +1230,7 @@ int Liric_Command_MultDark(char *command_string,char **reply_string)
  * @see ../detector/cdocs/detector_temperature.html#Detector_Temperature_PCB_Get
  * @see ../filter_wheel/cdocs/filter_wheel_command.html#Filter_Wheel_Command_Get_Position
  * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Position_Get
+ * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Temperature_Get
  * @see ../nudgematic/cdocs/nudgematic_command.html#NUDGEMATIC_OFFSET_SIZE_T
  * @see ../nudgematic/cdocs/nudgematic_command.html#Nudgematic_Command_Offset_Size_Get
  */
@@ -1246,7 +1247,7 @@ int Liric_Command_Status(char *command_string,char **reply_string)
 	char filter_name_string[32];
 	char *camera_name_string = NULL;
 	int retval,command_string_index,ivalue,filter_wheel_position,nudgematic_position;
-	double temperature;
+	double temperature,temp1,temp2,temp3;
 
 	/* parse command */
 	retval = sscanf(command_string,"status %31s %n",subsystem_string,&command_string_index);
@@ -1497,6 +1498,29 @@ int Liric_Command_Status(char *command_string,char **reply_string)
 					strcat(return_string,"UNKNOWN");
 				}
 			}
+			else if(strncmp(command_string+command_string_index,"temperature",11)==0)
+			{
+				if(!Nudgematic_Command_Temperature_Get(&temp1,&temp2,&temp3))
+				{
+					Liric_General_Error_Number = 553;
+					sprintf(Liric_General_Error_String,"Liric_Command_Status:"
+						"Failed to get nudgematic temperatures.");
+					Liric_General_Error("command","liric_command.c","Liric_Command_Status",
+							    LOG_VERBOSITY_TERSE,"COMMAND");
+#if LIRIC_DEBUG > 1
+					Liric_General_Log("command","liric_command.c","Liric_Command_Status",
+							  LOG_VERBOSITY_TERSE,"COMMAND",
+							  "Failed to get nudgematic temperatures.");
+#endif
+					if(!Liric_General_Add_String(reply_string,
+								     "1 Failed to get nudgematic temperatures."))
+						return FALSE;
+					return TRUE;
+				}
+				Liric_General_Get_Current_Time_String(time_string,31);
+				sprintf(return_string+strlen(return_string),"%s %.2f %.2f %.2f",time_string,
+					temp1,temp2,temp3);
+			}
 			else
 			{
 				Liric_General_Error_Number = 543;
@@ -1527,6 +1551,10 @@ int Liric_Command_Status(char *command_string,char **reply_string)
 				strcat(return_string,"stopped"); 
 			}
 			else if(strncmp(command_string+command_string_index,"offsetsize",10)==0)
+			{
+				strcat(return_string,"UNKNOWN"); 
+			}
+			else if(strncmp(command_string+command_string_index,"temperature",11)==0)
 			{
 				strcat(return_string,"UNKNOWN"); 
 			}
