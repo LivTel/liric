@@ -13,7 +13,7 @@ import java.util.*;
  * @author Chris Mottram
  * @version $Revision$
  */
-public class StatusNudgematicTemperatureCommand extends IntegerReplyCommand implements Runnable
+public class StatusNudgematicTemperatureCommand extends Command implements Runnable
 {
 	/**
 	 * Revision Control System id string, showing the version of the Class.
