@@ -414,6 +414,7 @@ int Nudgematic_Command_Temperature_Get(double *temp1,double *temp2,double *temp3
 {
 	char command_string[STRING_LENGTH];
 	char reply_string[STRING_LENGTH];
+	char command_char;
 	int retval;
 
 	if(temp1 == NULL)
@@ -446,8 +447,8 @@ int Nudgematic_Command_Temperature_Get(double *temp1,double *temp2,double *temp3
 		return FALSE;		
 	}
 	/* parse reply string */
-	retval = sscanf(reply_string,"%lf %lf %lf",temp1,temp2,temp3);
-	if(retval != 3)
+	retval = sscanf(reply_string,"%c %lf %lf %lf",&command_char,temp1,temp2,temp3);
+	if(retval != 4)
 	{
 		Command_Error_Number = 27;
 		sprintf(Command_Error_String,"Nudgematic_Command_Temperature_Get:Failed to parse reply_string '%s' (%d).",
