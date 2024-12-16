@@ -77,13 +77,13 @@ public class REBOOTImplementation extends CommandImplementation implements JMSCo
 	 * This is calculated as follows:
 	 * <ul>
 	 * <li>If the level is LEVEL_REDATUM, the number stored in &quot; 
-	 * liric.reboot.acknowledge_time.REDATUM &quot; in the Moptop properties file is the timeToComplete.
+	 * liric.reboot.acknowledge_time.REDATUM &quot; in the Liric properties file is the timeToComplete.
 	 * <li>If the level is LEVEL_SOFTWARE, the number stored in &quot; 
-	 * liric.reboot.acknowledge_time.SOFTWARE &quot; in the Moptop properties file is the timeToComplete.
+	 * liric.reboot.acknowledge_time.SOFTWARE &quot; in the Liric properties file is the timeToComplete.
 	 * <li>If the level is LEVEL_HARDWARE, the number stored in &quot; 
-	 * liric.reboot.acknowledge_time.HARDWARE &quot; in the Moptop properties file is the timeToComplete.
+	 * liric.reboot.acknowledge_time.HARDWARE &quot; in the Liric properties file is the timeToComplete.
 	 * <li>If the level is LEVEL_POWER_OFF, the number stored in &quot; 
-	 * liric.reboot.acknowledge_time.POWER_OFF &quot; in the Moptop properties file is the timeToComplete.
+	 * liric.reboot.acknowledge_time.POWER_OFF &quot; in the Liric properties file is the timeToComplete.
 	 * </ul>
 	 * If these numbers cannot be found, the default number DEFAULT_ACKNOWLEDGE_TIME is used instead.
 	 * @param command The command instance we are implementing.

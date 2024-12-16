@@ -69,7 +69,7 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 	 */
 	private String commsInstrumentStatus[] = new String[COMMS_INSTRUMENT_STATUS_COUNT];
 	/**
-	 * The current overall mode (status) of the RingoIII control system.
+	 * The current overall mode (status) of the Liric control system.
 	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#MODE_IDLE
 	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#MODE_EXPOSING
 	 * @see ngat.message.ISS_INST.GET_STATUS_DONE#MODE_READING_OUT
