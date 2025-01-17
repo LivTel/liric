@@ -143,7 +143,7 @@ public class REBOOTImplementation extends CommandImplementation implements JMSCo
 	 * as it contains information such as server ports.
 	 * @param command The command instance we are implementing.
 	 * @return An instance of REBOOT_DONE. Note this is only returned on a REDATUM level reboot,
-	 *         all other levels cause the Moptop to terminate (either directly or indirectly) and a DONE
+	 *         all other levels cause the Liric software to terminate (either directly or indirectly) and a DONE
 	 *         message cannot be returned.
 	 * @see ngat.message.ISS_INST.REBOOT#LEVEL_REDATUM
 	 * @see ngat.message.ISS_INST.REBOOT#LEVEL_SOFTWARE
