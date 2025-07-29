@@ -106,41 +106,23 @@ tar xvf ${deployment_tar}
 echo "Removing deployment tar."
 rm -f ${deployment_tar}
 #
-# Init script setup
+# Reseting / and /lib/systemd/system/ ownership
 #
-# Init script already copied as /etc/init.d/autobooter
-# Ubuntu 20.04 uses runlevel 2: runlevels 2345 are all multi-user 
-echo "Setting up autobooter initialisation script."
-set dir_list = "/etc/rc0.d /etc/rc1.d /etc/rc6.d"
-foreach dir ( ${dir_list} )
-    cd ${dir}
-    if( ! -e K01autobooter ) then
-	ln -s ../init.d/autobooter K01autobooter
-    endif
+foreach dir ( /  /lib /lib/systemd /lib/systemd/system )
+    echo "Reseting ${dir} ownership."
+    chown root:root ${dir}
+    chmod go-w ${dir}
 end
-set dir_list = " /etc/rc2.d /etc/rc3.d /etc/rc4.d /etc/rc5.d"
-foreach dir ( ${dir_list} )
-    cd ${dir}
-    if( ! -e S99autobooter ) then
-	ln -s ../init.d/autobooter S99autobooter
-    endif
-end
-echo "Setting up autobooter script."
-# Ubuntu 20.04
-chmod ugo+x /etc/init.d/autobooter
-chmod go-w /etc/init.d/autobooter
-chown root:root /etc/init.d/autobooter
 #
-# Reseting / and /etc ownership
+# systemd setup
 #
-echo "Reseting / ownership."
-chown root:root /
-chmod go-w /
-echo "Reseting /etc ownership."
-chown root:root /etc
-chmod go-w /etc
-echo "Reseting /etc/init.d ownership."
-chown root:root /etc/init.d/
+# systemd script already copied as /lib/systemd/system/autobooter.service
+echo "Setting up autobooter systemd script: Start autobooter.service."
+systemctl start autobooter.service
+echo "Setting up autobooter systemd script: Enable autobooter.service."
+systemctl enable autobooter.service
+echo "Setting up autobooter systemd script: Query status of autobooter.service."
+systemctl status autobooter.service
 #
 # Set up /icc ownership
 #
