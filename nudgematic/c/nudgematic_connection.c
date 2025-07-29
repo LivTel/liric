@@ -152,7 +152,9 @@ int Nudgematic_Connection_Open(const char* device_name)
 	/* initialise new serial options */
 	bzero(&(Nudgematic_Connection_Data.Serial_Options), sizeof(Nudgematic_Connection_Data.Serial_Options));
 	/* set control flags and baud rate */
-	Nudgematic_Connection_Data.Serial_Options.c_cflag |= B19200 | CS8 | CLOCAL | CREAD;
+	/*Nudgematic_Connection_Data.Serial_Options.c_cflag |= B19200 | CS8 | CLOCAL | CREAD;*/
+	/* Try running the Nudgematic at a lower baud rate to stop kernel panics (fault 2856) . */
+	Nudgematic_Connection_Data.Serial_Options.c_cflag |= B9600 | CS8 | CLOCAL | CREAD;
 #ifdef CNEW_RTSCTS
 	Nudgematic_Connection_Data.Serial_Options.c_cflag &= ~CNEW_RTSCTS;/* disable flow control */
 #endif
