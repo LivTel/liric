@@ -69,7 +69,8 @@ endif
 # Compatible with both Centos7 and Ubuntu 18.04?
 # Nope as object files are "ELF 64-bit LSB relocatable"
 #set bin_file_type = "ELF 64-bit LSB"
-set init_d_dir = "/etc/init.d"
+#set init_d_dir = "/etc/init.d"
+set systemd_dir = "/lib/systemd/system/"
 #
 # Clear old deployment.
 #
@@ -82,7 +83,7 @@ endif
 #
 echo "Creating directory structure..."
 set dir_count = 0
-set dir_list = "${deployment_dir} ${deployment_dir}/${init_d_dir} ${deployment_icc_dir} ${deployment_bin_dir} ${deployment_dir}/icc/tmp ${deployment_dir}/icc/tmp/log_archive ${deployment_dir}/icc/log ${deployment_icc_dir}/config ${deployment_bin_dir}/scripts ${deployment_bin_dir}/liric/scripts ${deployment_bin_dir}/liric/test ${deployment_bin_dir}/liric/fmt ${deployment_bin_dir}/liric/java/ ${deployment_bin_dir}/ics_gui/java ${deployment_bin_dir}/ics_gui/java/wav ${deployment_bin_dir}/liric/c/${HOSTTYPE} ${deployment_bin_dir}/liric/detector/test/${HOSTTYPE} ${deployment_bin_dir}/liric/filter_wheel/test/${HOSTTYPE} ${deployment_bin_dir}/liric/nudgematic/test/${HOSTTYPE} ${deployment_bin_dir}/ics_util/c/${HOSTTYPE} ${deployment_bin_dir}/ccd/misc/${HOSTTYPE} ${deployment_bin_dir}/lib/${HOSTTYPE} ${deployment_bin_dir}/log_udp/test/${HOSTTYPE} ${deployment_bin_dir}/commandserver/test/${HOSTTYPE} ${deployment_bin_dir}/ngatastro/test/${HOSTTYPE} ${deployment_bin_dir}/javalib ${deployment_bin_dir}/autobooter/java ${deployment_bin_dir}/ics_util/c/${HOSTTYPE}"
+set dir_list = "${deployment_dir} ${deployment_dir}/${systemd_dir} ${deployment_icc_dir} ${deployment_bin_dir} ${deployment_dir}/icc/tmp ${deployment_dir}/icc/tmp/log_archive ${deployment_dir}/icc/log ${deployment_icc_dir}/config ${deployment_bin_dir}/scripts ${deployment_bin_dir}/liric/scripts ${deployment_bin_dir}/liric/test ${deployment_bin_dir}/liric/fmt ${deployment_bin_dir}/liric/java/ ${deployment_bin_dir}/ics_gui/java ${deployment_bin_dir}/ics_gui/java/wav ${deployment_bin_dir}/liric/c/${HOSTTYPE} ${deployment_bin_dir}/liric/detector/test/${HOSTTYPE} ${deployment_bin_dir}/liric/filter_wheel/test/${HOSTTYPE} ${deployment_bin_dir}/liric/nudgematic/test/${HOSTTYPE} ${deployment_bin_dir}/ics_util/c/${HOSTTYPE} ${deployment_bin_dir}/ccd/misc/${HOSTTYPE} ${deployment_bin_dir}/lib/${HOSTTYPE} ${deployment_bin_dir}/log_udp/test/${HOSTTYPE} ${deployment_bin_dir}/commandserver/test/${HOSTTYPE} ${deployment_bin_dir}/ngatastro/test/${HOSTTYPE} ${deployment_bin_dir}/javalib ${deployment_bin_dir}/autobooter/java ${deployment_bin_dir}/ics_util/c/${HOSTTYPE}"
 foreach dir ( ${dir_list} )
 	mkdir -p ${dir}
 	if ($status != 0) then
@@ -319,11 +320,11 @@ foreach file ( ${file_list} )
 end
 echo "${file_count} fmt configuration files copied."
 #
-# /etc init scripts
+# systemd scripts
 #
-echo "Copying Autobooter initialisation script."
-set from_file = "${dev_bin_dir}/autobooter/java/${machine_name}.autobooter"
-set to_file = "${deployment_dir}/${init_d_dir}/autobooter"
+echo "Copying Autobooter systemd initialisation script."
+set from_file = "${dev_bin_dir}/autobooter/java/${machine_name}.autobooter.service"
+set to_file = "${deployment_dir}/${systemd_dir}/autobooter.service"
 cp  ${from_file} ${to_file}
 set cp_status = $status
 if( ${cp_status} != 0 ) then
