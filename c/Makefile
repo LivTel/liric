@@ -64,7 +64,7 @@ EXE_OBJS		= $(EXE_SRCS:%.c=$(BINDIR)/%.o)
 OBJS			= $(SRCS:%.c=$(BINDIR)/%.o)
 EXES			= $(BINDIR)/liric
 DOCS 			= $(SRCS:%.c=$(DOCSDIR)/%.html)
-CONFIG_SRCS		= liric1.liric.c.properties
+CONFIG_SRCS		= liric1.liric.c.properties liric2.liric.c.properties
 CONFIG_BINS		= $(CONFIG_SRCS:%.properties=$(BINDIR)/%.properties)
 
 
