@@ -24,7 +24,8 @@ INTERRUPT_IMPL_SRCS 	= ABORTImplementation.java GET_STATUSImplementation.java RE
 SETUP_IMPL_SRCS		= CONFIGImplementation.java
 OBJS 		= $(SRCS:%.java=$(BINDIR)/%.class)
 
-CONFIG_SRCS	= liric1.liric.net.properties liric1.liric.properties liric1.fits.properties
+CONFIG_SRCS	= liric1.liric.net.properties liric1.liric.properties liric1.fits.properties \
+		  liric2.liric.net.properties liric2.liric.properties liric2.fits.properties
 
 
 CONFIG_OBJS	= $(CONFIG_SRCS:%.properties=$(CONFIG_BINDIR)/%.properties)
