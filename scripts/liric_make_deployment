@@ -70,7 +70,9 @@ endif
 # Nope as object files are "ELF 64-bit LSB relocatable"
 #set bin_file_type = "ELF 64-bit LSB"
 #set init_d_dir = "/etc/init.d"
-set systemd_dir = "/lib/systemd/system/"
+# systemd dir is /lib/systemd/system/, but in Ubuntu 24.04 /lib is a soft-link to usr/lib . Therefore install
+# in /usr/lib/systemd/system/, otherwise the untar destroys the /lib soft-link and you loose all the contents of /lib!
+set systemd_dir = "/usr/lib/systemd/system/"
 #
 # Clear old deployment.
 #

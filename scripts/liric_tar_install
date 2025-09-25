@@ -106,9 +106,11 @@ tar xvf ${deployment_tar}
 echo "Removing deployment tar."
 rm -f ${deployment_tar}
 #
-# Reseting / and /lib/systemd/system/ ownership
+# systemd dir is /lib/systemd/system/, but in Ubuntu 24.04 /lib is a soft-link to usr/lib . Therefore install
+# in /usr/lib/systemd/system/, otherwise the untar destroys the /lib soft-link and you loose all the contents of /lib!
+# Reseting / and /usr/lib/systemd/system/ ownership
 #
-foreach dir ( /  /lib /lib/systemd /lib/systemd/system )
+foreach dir ( /  /usr /usr/lib /usr/lib/systemd /usr/lib/systemd/system )
     echo "Reseting ${dir} ownership."
     chown root:root ${dir}
     chmod go-w ${dir}
