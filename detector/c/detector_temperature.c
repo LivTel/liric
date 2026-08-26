@@ -124,6 +124,17 @@ int Detector_Temperature_Initialise(int adc_zeroC,int adc_fortyC,int dac_zeroC,i
 				    Temperature_Data.ADC_Zero_C,Temperature_Data.ADC_Forty_C,
 				    Temperature_Data.DAC_Zero_C,Temperature_Data.DAC_Forty_C);
 #endif
+	/* when the detector connection fails ADC_Zero_C and ADC_Forty_C can both return 65536,
+	** causing the slope ADC_M to be infinity. Check this is not the case */
+	if(Temperature_Data.ADC_Zero_C == Temperature_Data.ADC_Forty_C)
+	{
+		Temperature_Error_Number = 16;
+		sprintf(Temperature_Error_String,"Detector_Temperature_Initialise:"
+			"ADC_Zero_C (%d) and ADC_Forty_C (%d)are the same number, "
+			"this causes the slope parameter ADC_M to be infinity.",
+			Temperature_Data.ADC_Zero_C,Temperature_Data.ADC_Forty_C);
+		return FALSE;
+	}
 	/* compute m and c for the adc and dac slopes
 	** See OWL_640_Cooled_IM_v1_0.pdf, Sec 3.1.2, P10 */
 	/* ADC, X is ADC and Y is temperature */
@@ -276,7 +287,7 @@ int Detector_Temperature_Get(double *detector_temperature_C)
 {
 	int adc_value;
 #if LOGGING > 1
-	Detector_General_Log(LOG_VERBOSITY_INTERMEDIATE,"Detector_Temperature_Get:Starteded.");
+	Detector_General_Log(LOG_VERBOSITY_INTERMEDIATE,"Detector_Temperature_Get:Started.");
 #endif
 	Temperature_Error_Number = 0;
 	if(detector_temperature_C == NULL)
@@ -335,7 +346,7 @@ int Detector_Temperature_Get_TEC_Setpoint(double *setpoint_temperature_C)
 	int dac_value;
 
 #if LOGGING > 1
-	Detector_General_Log(LOG_VERBOSITY_INTERMEDIATE,"Detector_Temperature_Get_TEC_Setpoint:Starteded.");
+	Detector_General_Log(LOG_VERBOSITY_INTERMEDIATE,"Detector_Temperature_Get_TEC_Setpoint:Started.");
 #endif
 	Temperature_Error_Number = 0;
 	if(setpoint_temperature_C == NULL)
