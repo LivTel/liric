@@ -853,8 +853,12 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 				VALUE_STATUS_FAIL;
 		}
 		hashTable.put("Detector.Comms.Status",commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_DETECTOR]);
+		liric.log(Logging.VERBOSITY_VERBOSE,"getIntermediateStatus:Detector.Comms.Status = "+
+			  commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_DETECTOR]);
 		hashTable.put("Nudgematic.Comms.Status",
 			      commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_NUDGEMATIC]);
+		liric.log(Logging.VERBOSITY_VERBOSE,"getIntermediateStatus:Nudgematic.Comms.Status = "+
+			  commsInstrumentStatus[COMMS_INSTRUMENT_STATUS_NUDGEMATIC]);
 	// Standard status
 		setInstrumentStatus();
 	}
@@ -980,6 +984,9 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 		// set hashtable entry
 		hashTable.put(GET_STATUS_DONE.KEYWORD_DETECTOR_TEMPERATURE_INSTRUMENT_STATUS,
 			      detectorTemperatureInstrumentStatus);
+		liric.log(Logging.VERBOSITY_VERBOSE,"setDetectorTemperatureInstrumentStatus:"+
+			  GET_STATUS_DONE.KEYWORD_DETECTOR_TEMPERATURE_INSTRUMENT_STATUS+
+			  " = "+detectorTemperatureInstrumentStatus);
 	}
 
 	/**
@@ -1020,6 +1027,8 @@ public class GET_STATUSImplementation extends CommandImplementation implements J
 		}
 		// set standard status in hashtable
 		hashTable.put(GET_STATUS_DONE.KEYWORD_INSTRUMENT_STATUS,instrumentStatus);
+		liric.log(Logging.VERBOSITY_VERBOSE,"setInstrumentStatus:"+GET_STATUS_DONE.KEYWORD_INSTRUMENT_STATUS+
+			  " = "+instrumentStatus);
 	}
 
 	/**
