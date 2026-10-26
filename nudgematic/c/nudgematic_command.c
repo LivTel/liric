@@ -50,10 +50,6 @@
  */
 #define NUDGEMATIC_OFFSET_SIZE_COUNT   (3)
 /**
- * How many offset positions there are per offset size.
- */
-#define NUDGEMATIC_POSITION_COUNT      (9)
-/**
  * A length of time to sleep between querying the nudgematics position, in the move (Position_Set) loop.
  */
 #define COMMAND_MOVE_SLEEP_TIME_MS     (50)
