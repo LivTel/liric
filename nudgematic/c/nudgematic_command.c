@@ -110,17 +110,26 @@ static char Where_Command_List[NUDGEMATIC_CAM_COUNT] = {'w','W'};
  * @see #NUDGEMATIC_OFFSET_SIZE_COUNT
  * @see #NUDGEMATIC_CAM_COUNT
  */
+/* Fault #2971, vertical cam has failed, we can currently only access 3 positions,
+** vertical cam locked in 'e' position
+** static char Move_Command_List[NUDGEMATIC_POSITION_COUNT][NUDGEMATIC_OFFSET_SIZE_COUNT][NUDGEMATIC_CAM_COUNT] =
+{      NONE(V,H),SMALL(V,H),LARGE(V,H) 
+** 	{{'c','C'},{'c','C'},{'c','C'}},  centre 
+** 	{{'c','C'},{'b','B'},{'a','A'}},  top left 
+** 	{{'c','C'},{'d','D'},{'e','E'}},  bottom right 
+** 	{{'c','C'},{'b','D'},{'a','E'}},  top right 
+** 	{{'c','C'},{'d','B'},{'e','A'}},  bottom left 
+** 	{{'c','C'},{'c','B'},{'c','A'}},  centre left 
+** 	{{'c','C'},{'c','D'},{'c','E'}},  centre right 
+** 	{{'c','C'},{'b','C'},{'a','C'}},  top centre 
+** 	{{'c','C'},{'d','C'},{'e','C'}}   bottom centre 
+** };
+*/
 static char Move_Command_List[NUDGEMATIC_POSITION_COUNT][NUDGEMATIC_OFFSET_SIZE_COUNT][NUDGEMATIC_CAM_COUNT] =
 {     /* NONE(V,H),SMALL(V,H),LARGE(V,H) */
-	{{'c','C'},{'c','C'},{'c','C'}}, /* centre */
-	{{'c','C'},{'b','B'},{'a','A'}}, /* top left */
-	{{'c','C'},{'d','D'},{'e','E'}}, /* bottom right */
-	{{'c','C'},{'b','D'},{'a','E'}}, /* top right */
-	{{'c','C'},{'d','B'},{'e','A'}}, /* bottom left */
-	{{'c','C'},{'c','B'},{'c','A'}}, /* centre left */
-	{{'c','C'},{'c','D'},{'c','E'}}, /* centre right */
-	{{'c','C'},{'b','C'},{'a','C'}}, /* top centre */
-	{{'c','C'},{'d','C'},{'e','C'}}  /* bottom centre */
+	{{'e','C'},{'e','C'},{'e','C'}}, /* bottom centre */
+	{{'e','C'},{'e','B'},{'e','A'}}, /* bottom left */
+	{{'e','C'},{'e','D'},{'e','E'}}, /* bottom right */
 };
 
 /**

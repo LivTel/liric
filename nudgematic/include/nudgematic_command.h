@@ -6,9 +6,13 @@
 /* hash defines */
 
 /**
- * How many different positions can the nudgematic move it (at each offset size).
+ * How many different positions can the nudgematic move to (at each offset size).
  */
-#define NUDGEMATIC_POSITION_COUNT  (9)
+/* Fault #2971, vertical cam has failed, we can currently only access 3 positions,
+** vertical cam locked in 'e' position
+** #define NUDGEMATIC_POSITION_COUNT  (9)
+*/
+#define NUDGEMATIC_POSITION_COUNT  (3)
 
 /* enums */
 /**
